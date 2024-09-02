@@ -1,13 +1,17 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
+import config from './config';
 
 const app = express();
 const port = 8000;
 
 app.use(express.json());
+app.use(cors(config.corsOptions));
+app.use(express.static('public'));
 
 const run = async () => {
-  await mongoose.connect('mongodb://localhost/music-app');
+  await mongoose.connect(config.database);
 
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
