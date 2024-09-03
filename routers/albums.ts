@@ -2,6 +2,7 @@ import express from 'express';
 import Album from '../models/Album';
 import {imagesUpload} from '../multer';
 import {IAlbum} from '../types';
+import mongoose from 'mongoose';
 
 const albumsRouter = express.Router();
 
@@ -28,6 +29,9 @@ albumsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
     return res.send(album);
 
   } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(400).send(error);
+    }
     return next(error);
   }
 });
