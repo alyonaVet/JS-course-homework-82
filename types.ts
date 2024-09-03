@@ -3,3 +3,10 @@ export interface IArtist {
   image: string | null;
   description: string | null;
 }
+
+export interface IAlbum {
+  artist: string;
+  title: string;
+  date: string;
+  image: string | null;
+}
