@@ -1,3 +1,5 @@
+import {Model} from 'mongoose';
+
 export interface IArtist {
   name: string;
   image: string | null;
@@ -22,3 +24,10 @@ export interface UserFields {
   password: string;
   token: string;
 }
+
+export interface UserMethods {
+  checkPassword(password: string): Promise<boolean>;
+  generateToken(): void;
+}
+
+export type UserModel = Model<UserFields, {}, UserMethods>
