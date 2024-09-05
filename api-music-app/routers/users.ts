@@ -1,8 +1,6 @@
 import express from 'express';
-import User from '../models/User';
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
-import {randomUUID} from 'crypto';
+import User from '../models/User';
 
 const usersRouter = express.Router();
 
@@ -11,9 +9,9 @@ usersRouter.post('/', async (req, res, next) => {
     const user = new User({
       username: req.body.username,
       password: req.body.password,
-      token: randomUUID(),
     });
 
+    user.generateToken();
     await user.save();
     return res.send(user);
 
@@ -33,13 +31,13 @@ usersRouter.post('/sessions', async (req, res, next) => {
       return res.status(400).send({error: 'Username not found!'});
     }
 
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
+    const isMatch = await user.checkPassword(req.body.password);
 
     if (!isMatch) {
       return res.status(400).send({error: 'Password is wrong!'});
     }
 
-    user.token = randomUUID();
+    user.generateToken();
     await user.save();
 
     return res.send(user);
