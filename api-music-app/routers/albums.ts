@@ -10,7 +10,7 @@ albumsRouter.get('/', async (req, res, next) => {
   try {
     const artistId = req.query.artist;
     const artistFilter = artistId ? {artist: artistId} : {};
-    const albums = await Album.find(artistFilter).populate('artist');
+    const albums = await Album.find(artistFilter);
     return res.send(albums);
   } catch (error) {
     return next(error);
@@ -40,7 +40,7 @@ albumsRouter.post('/', imagesUpload.single('image'), async (req, res, next) => {
 
 albumsRouter.get('/:id', async (req, res, next) => {
   try {
-    const album = await Album.findById(req.params.id);
+    const album = await Album.findById(req.params.id).populate('artist');
 
     if (album === null) {
       return res.status(404).send({error: 'Album not found'});
