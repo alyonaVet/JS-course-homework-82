@@ -9,13 +9,14 @@ export interface IArtist {
 export interface IAlbum {
   artist: string;
   title: string;
-  date: string;
+  date: number;
   image: string | null;
 }
 
 export interface ITrack {
   album: string;
   title: string;
+  trackNumber: number;
   duration: string;
 }
 
