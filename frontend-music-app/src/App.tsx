@@ -1,9 +1,14 @@
+import './App.css';
+import AppToolbar from './UI/AppToolbar/AppToolbar';
+
 const App = () => {
-    return (
-        <>
-            Hello World!
-        </>
-    )
+  return (
+    <>
+      <header>
+        <AppToolbar/>
+      </header>
+    </>
+  );
 };
 
 export default App;
