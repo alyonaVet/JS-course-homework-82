@@ -1,5 +1,6 @@
 import React from 'react';
 import {Box, Card, CardActionArea, CardContent, CardMedia, styled, Typography} from '@mui/material';
+import {apiURL} from '../../../constants';
 
 interface Props {
   name: string;
@@ -13,7 +14,7 @@ const ArtistCard: React.FC<Props> = ({name, image}) => {
     objectFit: 'cover',
   });
 
-  const cardImage = image ? `http://localhost:8000/${image}` : '';
+  const cardImage = image ? apiURL + '/' + image : '';
 
   return (
     <Card sx={{width: 300, m: 1}}>
