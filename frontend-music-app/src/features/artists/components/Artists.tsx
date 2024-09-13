@@ -1,6 +1,6 @@
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
-import {selectArtists} from '../artistsSlice';
-import {Stack} from '@mui/material';
+import {selectArtists, selectIsFetching} from '../artistsSlice';
+import {Box, CircularProgress, Stack} from '@mui/material';
 import ArtistCard from './ArtistCard';
 import {useEffect} from 'react';
 import {fetchArtists} from '../artistsThunk';
@@ -10,6 +10,7 @@ const Artists = () => {
   const dispatch = useAppDispatch();
   const artists = useAppSelector(selectArtists);
   const navigate = useNavigate();
+  const artistsFetching = useAppSelector(selectIsFetching);
 
   useEffect(() => {
     dispatch(fetchArtists());
@@ -20,17 +21,24 @@ const Artists = () => {
   };
 
   return (
-    <Stack direction={'row'} alignItems={'center'} mt={3} justifyContent={'center'} flexWrap={'wrap'}>
-      {artists.map((artist) => (
-        <ArtistCard
-          key={artist._id}
-          name={artist.name}
-          image={artist.image}
-          onClick={() => handleCardClick(artist._id)}
-        />
-      ))}
-
-    </Stack>
+    <Box sx={{m: 4}}>
+      {artistsFetching ? (
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh'}}>
+          <CircularProgress/>
+        </Box>
+      ) : (
+        <Stack direction={'row'} alignItems={'center'} justifyContent={'center'} flexWrap={'wrap'}>
+          {artists.map((artist) => (
+            <ArtistCard
+              key={artist._id}
+              name={artist.name}
+              image={artist.image}
+              onClick={() => handleCardClick(artist._id)}
+            />
+          ))}
+        </Stack>
+      )}
+    </Box>
   );
 };
 

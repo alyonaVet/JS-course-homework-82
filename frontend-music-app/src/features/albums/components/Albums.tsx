@@ -1,6 +1,6 @@
-import {Box, Stack, Typography} from '@mui/material';
+import {Box, CircularProgress, Stack, Typography} from '@mui/material';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
-import {selectAlbums} from '../albumsSlice';
+import {selectAlbumFetching, selectAlbums} from '../albumsSlice';
 import {useNavigate, useParams} from 'react-router-dom';
 import {selectArtists} from '../../artists/artistsSlice';
 import {useEffect} from 'react';
@@ -14,6 +14,7 @@ const Albums = () => {
   const artists = useAppSelector(selectArtists);
   const {artistId} = useParams();
   const navigate = useNavigate();
+  const albumsFetching = useAppSelector(selectAlbumFetching);
 
 
   useEffect(() => {
@@ -36,17 +37,23 @@ const Albums = () => {
           {artist.name}
         </Typography>
       )}
-      <Stack direction="row" spacing={2}>
-        {albums.map((album) => (
-          <AlbumCard
-            key={album._id}
-            title={album.title}
-            date={album.date}
-            image={album.image}
-            onClick={() => handleAlbumClick(album._id)}
-          />
-        ))}
-      </Stack>
+      {albumsFetching ? (
+        <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh'}}>
+          <CircularProgress/>
+        </Box>
+      ) : (
+        <Stack direction="row" spacing={2}>
+          {albums.map((album) => (
+            <AlbumCard
+              key={album._id}
+              title={album.title}
+              date={album.date}
+              image={album.image}
+              onClick={() => handleAlbumClick(album._id)}
+            />
+          ))}
+        </Stack>
+      )}
     </Box>
   );
 };
