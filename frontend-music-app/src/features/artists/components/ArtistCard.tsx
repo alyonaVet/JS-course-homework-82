@@ -4,10 +4,11 @@ import {apiURL} from '../../../constants';
 
 interface Props {
   name: string;
-  image?: string;
+  image: string | null;
+  onClick: () => void;
 }
 
-const ArtistCard: React.FC<Props> = ({name, image}) => {
+const ArtistCard: React.FC<Props> = ({name, image, onClick}) => {
   const ImageCardMedia = styled(CardMedia)({
     height: 0,
     paddingTop: '100%',
@@ -17,8 +18,16 @@ const ArtistCard: React.FC<Props> = ({name, image}) => {
   const cardImage = image ? apiURL + '/' + image : '';
 
   return (
-    <Card sx={{width: 300, m: 1}}>
-      <CardActionArea>
+    <Card sx={{
+      width: 300,
+      m: 1,
+      '&:hover': {
+        boxShadow: 6,
+        transform: 'scale(1.03)',
+      },
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    }}>
+      <CardActionArea onClick={onClick}>
         {image ? (
           <ImageCardMedia image={cardImage} />
         ) : (
