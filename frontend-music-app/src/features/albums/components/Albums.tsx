@@ -6,6 +6,7 @@ import {selectArtists} from '../../artists/artistsSlice';
 import {useEffect} from 'react';
 import {fetchAlbums} from '../albumsThunk';
 import AlbumCard from './AlbumCard';
+import {fetchArtists} from '../../artists/artistsThunk';
 
 const Albums = () => {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ const Albums = () => {
   useEffect(() => {
     if (artistId) {
       dispatch(fetchAlbums(artistId));
+      dispatch(fetchArtists());
     }
   }, [dispatch, artistId]);
 

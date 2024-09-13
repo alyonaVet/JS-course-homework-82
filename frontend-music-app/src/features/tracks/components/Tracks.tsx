@@ -6,6 +6,7 @@ import {useEffect} from 'react';
 import {fetchTracks} from '../tracksThunk';
 import {Box, Stack, Typography} from '@mui/material';
 import TrackCard from './TrackCard';
+import {fetchAlbums} from '../../albums/albumsThunk';
 
 const Tracks = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ const Tracks = () => {
 
   useEffect(() => {
     dispatch(fetchTracks(albumId));
+    dispatch(fetchAlbums());
   }, [dispatch, albumId]);
 
   const album = albums.find((album) => album._id === albumId);
