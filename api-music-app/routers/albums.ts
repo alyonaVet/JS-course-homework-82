@@ -3,7 +3,6 @@ import Album from '../models/Album';
 import {imagesUpload} from '../multer';
 import {IAlbum} from '../types';
 import mongoose from 'mongoose';
-import Artist from '../models/Artist';
 
 const albumsRouter = express.Router();
 
@@ -13,7 +12,7 @@ albumsRouter.get('/', async (req, res, next) => {
 
     const artistFilter = artistId ? {artist: artistId} : {};
 
-    const albums = await Album.find(artistFilter).sort({ date: -1 }).populate('artist', 'name');
+    const albums = await Album.find(artistFilter).sort({date: -1}).populate('artist', 'name');
     return res.send(albums);
   } catch (error) {
     return next(error);
