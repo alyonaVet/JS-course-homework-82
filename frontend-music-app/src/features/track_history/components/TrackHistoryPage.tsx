@@ -3,16 +3,21 @@ import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {selectTrackHistory} from '../trackHistorySlice';
 import {useEffect} from 'react';
 import {fetchTrackHistory} from '../trackHistoryThunk';
+import {selectUser} from '../../users/usersSlice';
+import {Navigate, } from 'react-router-dom';
 
 const TrackHistoryPage = () => {
   const dispatch = useAppDispatch();
   const trackHistory = useAppSelector(selectTrackHistory);
+  const user = useAppSelector(selectUser);
+
+  if (!user) {
+    return <Navigate to='/login'/>
+  }
 
   useEffect(() => {
     dispatch(fetchTrackHistory());
   }, [dispatch]);
-
-  console.log(trackHistory);
 
   return (
     <Box sx={{m: 3}}>
