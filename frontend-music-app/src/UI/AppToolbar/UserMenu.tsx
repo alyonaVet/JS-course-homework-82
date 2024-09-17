@@ -2,6 +2,7 @@ import {Avatar, Box, Button, Menu, MenuItem} from '@mui/material';
 import {User} from '../../types';
 import React, {useState} from 'react';
 import PersonIcon from '@mui/icons-material/Person';
+import {Link} from 'react-router-dom';
 
 interface Props {
   user: User;
@@ -29,7 +30,7 @@ const UserMenu: React.FC<Props> = ({ user }) => {
       </Button>
       <Menu anchorEl={anchorEl} open={isOpen} keepMounted onClose={handleClose}>
         <MenuItem>Profile</MenuItem>
-        <MenuItem>My account</MenuItem>
+        <MenuItem component={Link} to="/track-history">Track History</MenuItem>
         <MenuItem>Logout</MenuItem>
       </Menu>
     </Box>
