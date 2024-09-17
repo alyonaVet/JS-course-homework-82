@@ -7,6 +7,8 @@ import {fetchTracks} from '../tracksThunk';
 import {Box, CircularProgress, Stack, Typography} from '@mui/material';
 import TrackCard from './TrackCard';
 import {fetchAlbums} from '../../albums/albumsThunk';
+import {fetchTrackHistory} from '../../track_history/trackHistoryThunk';
+import {selectUser} from '../../users/usersSlice';
 
 const Tracks = () => {
   const dispatch = useAppDispatch();
@@ -14,6 +16,7 @@ const Tracks = () => {
   const tracks = useAppSelector(selectTracks);
   const {albumId} = useParams();
   const tracksFetching = useAppSelector(selectTracksFetching);
+  const user = useAppSelector(selectUser);
 
 
   useEffect(() => {
@@ -22,6 +25,10 @@ const Tracks = () => {
   }, [dispatch, albumId]);
 
   const album = albums.find((album) => album._id === albumId);
+
+  const handleTrackPlay = async (trackId: string) => {
+   await dispatch(fetchTrackHistory(trackId)).unwrap();
+  };
 
   return (
     <Box sx={{m: 6}}>
@@ -43,19 +50,25 @@ const Tracks = () => {
               )}
             </Stack>
           )}
-          <Stack direction="column" spacing={2}>
-            {tracks.map((track) => (
-              <TrackCard
-                key={track._id}
-                title={track.title}
-                trackNumber={track.trackNumber}
-                duration={track.duration}
-              />
-            ))}
-          </Stack>
+          {user ? (
+            <Stack direction="column" spacing={2}>
+              {tracks.map((track) => (
+                <TrackCard
+                  key={track._id}
+                  title={track.title}
+                  trackNumber={track.trackNumber}
+                  duration={track.duration}
+                  onPlay={() => handleTrackPlay(track._id)}
+                />
+              ))}
+            </Stack>
+          ) : (
+            <Typography variant="h6">You should be logged in to view the tracks.</Typography>
+          )}
         </>
       )}
-    </Box>);
+    </Box>
+  );
 };
 
 export default Tracks;
