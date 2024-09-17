@@ -59,5 +59,10 @@ export interface TrackHistory  {
   _id: string;
   user: string;
   track: string;
+  trackTitle: string;
+  album: string;
+  albumTitle: string;
+  artist: string;
+  artistName: string;
   datetime: string;
 }
