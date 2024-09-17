@@ -1,4 +1,4 @@
-import mongoose, {HydratedDocument, Types} from 'mongoose';
+import mongoose, {HydratedDocument} from 'mongoose';
 import bcrypt from 'bcrypt';
 import {UserFields, UserMethods, UserModel} from '../types';
 import {randomUUID} from 'crypto';
