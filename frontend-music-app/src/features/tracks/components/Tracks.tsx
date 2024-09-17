@@ -7,7 +7,7 @@ import {fetchTracks} from '../tracksThunk';
 import {Box, CircularProgress, Stack, Typography} from '@mui/material';
 import TrackCard from './TrackCard';
 import {fetchAlbums} from '../../albums/albumsThunk';
-import {fetchTrackHistory} from '../../track_history/trackHistoryThunk';
+import {addTrackHistory} from '../../track_history/trackHistoryThunk';
 import {selectUser} from '../../users/usersSlice';
 
 const Tracks = () => {
@@ -27,7 +27,7 @@ const Tracks = () => {
   const album = albums.find((album) => album._id === albumId);
 
   const handleTrackPlay = async (trackId: string) => {
-   await dispatch(fetchTrackHistory(trackId)).unwrap();
+   await dispatch(addTrackHistory(trackId)).unwrap();
   };
 
   return (
