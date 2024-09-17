@@ -1,6 +1,6 @@
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {selectArtists, selectIsFetching} from '../artistsSlice';
-import {Box, CircularProgress, Stack} from '@mui/material';
+import {Box, CircularProgress, Stack, Typography} from '@mui/material';
 import ArtistCard from './ArtistCard';
 import {useEffect} from 'react';
 import {fetchArtists} from '../artistsThunk';
@@ -22,6 +22,9 @@ const Artists = () => {
 
   return (
     <Box sx={{m: 4}}>
+      <Typography variant="h4" component="h1" gutterBottom textAlign="center">
+        Artists
+      </Typography>
       {artistsFetching ? (
         <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh'}}>
           <CircularProgress/>
