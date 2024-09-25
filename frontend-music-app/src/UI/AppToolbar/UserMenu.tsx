@@ -3,12 +3,15 @@ import {User} from '../../types';
 import React, {useState} from 'react';
 import PersonIcon from '@mui/icons-material/Person';
 import {Link} from 'react-router-dom';
+import {useAppDispatch} from '../../app/hooks';
+import {logout} from '../../features/users/usersThunk';
 
 interface Props {
   user: User;
 }
 
 const UserMenu: React.FC<Props> = ({ user }) => {
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isOpen = Boolean(anchorEl);
 
@@ -18,6 +21,10 @@ const UserMenu: React.FC<Props> = ({ user }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
@@ -31,7 +38,7 @@ const UserMenu: React.FC<Props> = ({ user }) => {
       <Menu anchorEl={anchorEl} open={isOpen} keepMounted onClose={handleClose}>
         <MenuItem>Profile</MenuItem>
         <MenuItem component={Link} to="/track-history">Track History</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </Box>
   );
