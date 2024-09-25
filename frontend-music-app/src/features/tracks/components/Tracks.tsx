@@ -1,10 +1,10 @@
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {selectTracks, selectTracksFetching} from '../tracksSlice';
 import {selectAlbums} from '../../albums/albumsSlice';
-import {useParams} from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 import {useEffect} from 'react';
 import {fetchTracks} from '../tracksThunk';
-import {Box, CircularProgress, Stack, Typography} from '@mui/material';
+import {Box, CircularProgress, Link, Stack, Typography} from '@mui/material';
 import TrackCard from './TrackCard';
 import {fetchAlbums} from '../../albums/albumsThunk';
 import {addTrackHistory} from '../../track_history/trackHistoryThunk';
@@ -27,7 +27,9 @@ const Tracks = () => {
   const album = albums.find((album) => album._id === albumId);
 
   const handleTrackPlay = async (trackId: string) => {
-   await dispatch(addTrackHistory(trackId)).unwrap();
+    if (user) {
+      await dispatch(addTrackHistory(trackId)).unwrap();
+    }
   };
 
   return (
@@ -50,22 +52,25 @@ const Tracks = () => {
               )}
             </Stack>
           )}
-          {user ? (
-            <Stack direction="column" spacing={2}>
-              {tracks.map((track) => (
-                <TrackCard
-                  key={track._id}
-                  title={track.title}
-                  trackNumber={track.trackNumber}
-                  duration={track.duration}
-                  onPlay={() => handleTrackPlay(track._id)}
-                />
-              ))}
-            </Stack>
-          ) : (
-            <Typography variant="h6">You should be logged in to view the tracks.</Typography>
-          )}
+          <Stack direction="column" spacing={2}>
+            {tracks.map((track) => (
+              <TrackCard
+                key={track._id}
+                title={track.title}
+                trackNumber={track.trackNumber}
+                duration={track.duration}
+                onPlay={() => handleTrackPlay(track._id)}
+                isVisible={!!user}
+              />
+            ))}
+          </Stack>
         </>
+      )}
+      {!user && (
+        <Stack direction={'row'} alignItems={'center'} gap={1} sx={{mt: 5}}>
+          <Typography variant="body2" sx={{color: '#9e9e9e'}}>If you want to play tracks</Typography>
+          <Link component={NavLink} to="/login" color="primary">Sign in</Link>
+        </Stack>
       )}
     </Box>
   );

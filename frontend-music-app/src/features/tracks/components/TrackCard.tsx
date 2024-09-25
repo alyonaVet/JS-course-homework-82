@@ -6,9 +6,10 @@ interface Props {
   trackNumber: number;
   duration: string;
   onPlay: () => void;
+  isVisible: boolean;
 }
 
-const TrackCard: React.FC<Props> = ({title, trackNumber, duration, onPlay}) => {
+const TrackCard: React.FC<Props> = ({title, trackNumber, duration, onPlay, isVisible}) => {
   return (
     <Paper sx={{p: 1, mt: 2, padding: 2}} elevation={3}>
       <Stack direction={'row'} gap={2}>
@@ -19,7 +20,11 @@ const TrackCard: React.FC<Props> = ({title, trackNumber, duration, onPlay}) => {
         <Stack>
           <Stack direction={'row'} gap={2} alignItems="center">
             <Typography>{duration}</Typography>
-            <Button variant="contained" onClick={onPlay}>Play</Button>
+            {isVisible && (
+              <Button variant="contained" onClick={onPlay}>
+                Play
+              </Button>
+            )}
           </Stack>
         </Stack>
       </Stack>
