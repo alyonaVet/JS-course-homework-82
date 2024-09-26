@@ -1,12 +1,14 @@
-import express from "express";
+import express from 'express';
 import Artist from '../models/Artist';
 import {imagesUpload} from '../multer';
 import mongoose from 'mongoose';
 import {IArtist} from '../types';
+import auth, {RequestWithUser} from '../middleware/auth';
+import permit from '../middleware/permit';
 
 const artistsRouter = express.Router();
 
-artistsRouter.get("/", async (req, res, next) => {
+artistsRouter.get('/', async (req, res, next) => {
   try {
     const artists = await Artist.find();
     return res.send(artists);
@@ -15,8 +17,12 @@ artistsRouter.get("/", async (req, res, next) => {
   }
 });
 
-artistsRouter.post("/", imagesUpload.single('image'), async (req, res, next) => {
+artistsRouter.post('/', auth, imagesUpload.single('image'), async (req: RequestWithUser, res, next) => {
   try {
+    if (!req.user) {
+      return res.status(401).send({error: 'User not found'});
+    }
+
     const artistData: IArtist = {
       name: req.body.name,
       image: req.file ? req.file.filename : null,
@@ -31,6 +37,54 @@ artistsRouter.post("/", imagesUpload.single('image'), async (req, res, next) => 
     if (error instanceof mongoose.Error.ValidationError) {
       return res.status(400).send(error);
     }
+    return next(error);
+  }
+});
+
+artistsRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req: RequestWithUser, res, next) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).send({error: 'Artist ID is not valid'});
+    }
+
+    const artist = await Artist.findById(req.params.id);
+
+    if (!artist) {
+      return res.status(404).send({error: 'Artist not found'});
+    }
+
+    artist.isPublished = !artist.isPublished;
+
+    await artist.save();
+
+    return res.send(artist);
+
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(400).send(error);
+    }
+    return next(error);
+  }
+});
+
+artistsRouter.delete('/:id', auth, permit('admin'), async (req: RequestWithUser, res, next) => {
+  try {
+
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).send({error: 'Artist ID is not valid'});
+    }
+
+    const artist = await Artist.findById(req.params.id);
+
+    if (!artist) {
+      return res.status(404).send({error: 'Artist not found'});
+    }
+
+    await artist.deleteOne();
+
+    return res.send({message: 'Artist was deleted successfully.'});
+
+  } catch (error) {
     return next(error);
   }
 });
