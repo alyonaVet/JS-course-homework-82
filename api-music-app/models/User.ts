@@ -8,34 +8,36 @@ const SALT_WORK_FACTOR = 10;
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema<UserFields, UserModel, UserMethods>({
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      validate: {
-        validator: async function (value: string): Promise<boolean> {
-          if (!(this as HydratedDocument<UserFields>).isModified('username')) {
-            return true ;
-          }
-          const user = await User.findOne({username: value});
-          return !user;
-        },
-        message: 'This user is already registered',
-      }
-    },
-    password: {
-      type: String,
-      required:
-        true,
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: async function (value: string): Promise<boolean> {
+        if (!(this as HydratedDocument<UserFields>).isModified('username')) {
+          return true;
+        }
+        const user = await User.findOne({username: value});
+        return !user;
+      },
+      message: 'This user is already registered',
     }
-    ,
-    token: {
-      type: String,
-      required:
-        true,
-    }
-  })
-;
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  token: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    default: 'user',
+    enum: ['user', 'admin'],
+  }
+});
 
 UserSchema.methods.checkPassword = function (password) {
   return bcrypt.compare(password, this.password);
