@@ -1,8 +1,11 @@
 export interface Artist {
   _id: string;
   name: string;
+  description: string | null;
   image: string | null;
 }
+
+export type ArtistFields = Omit<Artist, '_id'>
 
 export interface Album {
   _id: string;
@@ -15,6 +18,14 @@ export interface Album {
   image: string | null;
 }
 
+export interface AlbumFields {
+  artist: string;
+  title: string;
+  date: string;
+  image: string | null;
+}
+
+
 export interface Track {
   _id: string;
   album: string;
@@ -22,6 +33,14 @@ export interface Track {
   trackNumber: number;
   duration: string;
 }
+
+export interface TrackFields {
+  album: string;
+  title: string;
+  trackNumber: string;
+  duration: string;
+}
+
 
 export interface RegisterCredentials {
   username: string;
@@ -37,6 +56,7 @@ export interface User {
   _id: string;
   username: string;
   token: string;
+  role: string;
 }
 
 export interface ValidationError {
