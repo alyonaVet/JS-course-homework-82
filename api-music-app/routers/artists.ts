@@ -3,14 +3,19 @@ import Artist from '../models/Artist';
 import {imagesUpload} from '../multer';
 import mongoose from 'mongoose';
 import {IArtist} from '../types';
-import auth, {RequestWithUser} from '../middleware/auth';
+import auth, {checkUser, RequestWithUser} from '../middleware/auth';
 import permit from '../middleware/permit';
 
 const artistsRouter = express.Router();
 
-artistsRouter.get('/', async (req, res, next) => {
+
+artistsRouter.get('/', checkUser, async (req: RequestWithUser, res, next) => {
   try {
-    const artists = await Artist.find();
+    const isAdmin = req.user !== undefined && req.user.role === 'admin';
+    const filter = isAdmin ? {} : { isPublished: true };
+
+    const artists = await Artist.find(filter);
+
     return res.send(artists);
   } catch (error) {
     return next(error);
