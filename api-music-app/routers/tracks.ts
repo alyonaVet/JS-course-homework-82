@@ -29,7 +29,7 @@ tracksRouter.post('/', auth,  async (req: RequestWithUser, res, next) => {
     const trackData: ITrack = {
       album: req.body.album,
       title: req.body.title,
-      trackNumber: req.body.trackNumber,
+      trackNumber: parseInt(req.body.trackNumber),
       duration: req.body.duration,
     };
 
