@@ -1,9 +1,9 @@
-import {useAppDispatch, useAppSelector} from '../../../app/hooks';
-import {selectArtists, selectIsFetching} from '../artistsSlice';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {selectArtists, selectIsFetching} from './artistsSlice';
 import {Box, CircularProgress, Stack, Typography} from '@mui/material';
-import ArtistCard from './ArtistCard';
+import ArtistCard from './components/ArtistCard';
 import {useEffect} from 'react';
-import {fetchArtists} from '../artistsThunk';
+import {fetchArtists} from './artistsThunk';
 import {useNavigate} from 'react-router-dom';
 
 const Artists = () => {
