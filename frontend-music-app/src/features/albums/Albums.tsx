@@ -1,12 +1,12 @@
 import {Box, CircularProgress, Stack, Typography} from '@mui/material';
-import {useAppDispatch, useAppSelector} from '../../../app/hooks';
-import {selectAlbumFetching, selectAlbums} from '../albumsSlice';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {selectAlbumFetching, selectAlbums} from './albumsSlice';
 import {useNavigate, useParams} from 'react-router-dom';
-import {selectArtists} from '../../artists/artistsSlice';
+import {selectArtists} from '../artists/artistsSlice';
 import {useEffect} from 'react';
-import {fetchAlbums} from '../albumsThunk';
-import AlbumCard from './AlbumCard';
-import {fetchArtists} from '../../artists/artistsThunk';
+import {fetchAlbums} from './albumsThunk';
+import AlbumCard from './components/AlbumCard';
+import {fetchArtists} from '../artists/artistsThunk';
 
 const Albums = () => {
   const dispatch = useAppDispatch();
