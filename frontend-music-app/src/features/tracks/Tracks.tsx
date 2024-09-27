@@ -1,14 +1,14 @@
-import {useAppDispatch, useAppSelector} from '../../../app/hooks';
-import {selectTracks, selectTracksFetching} from '../tracksSlice';
-import {selectAlbums} from '../../albums/albumsSlice';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
+import {selectTracks, selectTracksFetching} from './tracksSlice';
+import {selectAlbums} from '../albums/albumsSlice';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect} from 'react';
-import {fetchTracks} from '../tracksThunk';
+import {fetchTracks} from './tracksThunk';
 import {Box, CircularProgress, Link, Stack, Typography} from '@mui/material';
-import TrackCard from './TrackCard';
-import {fetchAlbums} from '../../albums/albumsThunk';
-import {addTrackHistory} from '../../track_history/trackHistoryThunk';
-import {selectUser} from '../../users/usersSlice';
+import TrackCard from './components/TrackCard';
+import {fetchAlbums} from '../albums/albumsThunk';
+import {addTrackHistory} from '../track_history/trackHistoryThunk';
+import {selectUser} from '../users/usersSlice';
 
 const Tracks = () => {
   const dispatch = useAppDispatch();
