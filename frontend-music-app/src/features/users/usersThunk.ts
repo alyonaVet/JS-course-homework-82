@@ -3,7 +3,6 @@ import {GlobalError, LoginCredentials, RegisterCredentials, User, ValidationErro
 import axiosApi from '../../axiosApi';
 import {isAxiosError} from 'axios';
 import {unsetUser} from './usersSlice';
-import {RootState} from '../../app/store';
 
 export const register = createAsyncThunk<User, RegisterCredentials, { rejectValue: ValidationError }>(
   'users/register',
@@ -13,7 +12,7 @@ export const register = createAsyncThunk<User, RegisterCredentials, { rejectValu
       return user;
     } catch (error) {
       if (isAxiosError(error) && error.response && error.response.status === 400) {
-         return rejectWithValue(error.response.data);
+        return rejectWithValue(error.response.data);
       }
 
       throw error;
@@ -38,11 +37,10 @@ export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: Glo
   }
 );
 
-export const logout = createAsyncThunk<void, void, { state: RootState }>(
+export const logout = createAsyncThunk(
   'users/logout',
-  async (_, {getState, dispatch}) => {
-    const token = getState().users.user?.token;
-    await axiosApi.delete('/users/sessions', {headers: {Authorization: `Bearer ${token}`}});
+  async (_, {dispatch}) => {
+    await axiosApi.delete('/users/sessions');
     dispatch(unsetUser());
   }
 );
