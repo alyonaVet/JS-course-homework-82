@@ -36,7 +36,9 @@ const UserMenu: React.FC<Props> = ({ user }) => {
         {user.username}
       </Button>
       <Menu anchorEl={anchorEl} open={isOpen} keepMounted onClose={handleClose}>
-        <MenuItem>Profile</MenuItem>
+        <MenuItem component={Link} to="/artists/add-artist">Add artist</MenuItem>
+        <MenuItem component={Link} to="albums/add-album">Add album</MenuItem>
+        <MenuItem component={Link} to="tracks/add-track">Add track</MenuItem>
         <MenuItem component={Link} to="/track-history">Track History</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
