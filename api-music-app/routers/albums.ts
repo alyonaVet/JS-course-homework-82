@@ -30,7 +30,7 @@ albumsRouter.post('/', auth, imagesUpload.single('image'), async (req: RequestWi
     const albumData: IAlbum = {
       artist: req.body.artist,
       title: req.body.title,
-      date: req.body.date,
+      date: parseInt(req.body.date),
       image: req.file ? req.file.filename : null,
     };
 
