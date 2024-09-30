@@ -1,9 +1,9 @@
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {selectTracks, selectTracksFetching} from './tracksSlice';
+import {selectTrackDeleting, selectTracks, selectTracksFetching, selectTrackToggling} from './tracksSlice';
 import {selectAlbums} from '../albums/albumsSlice';
 import {NavLink, useParams} from 'react-router-dom';
 import {useEffect} from 'react';
-import {fetchTracks} from './tracksThunk';
+import {deleteTrack, fetchTracks, togglePublishedTrack} from './tracksThunk';
 import {Box, CircularProgress, Link, Stack, Typography} from '@mui/material';
 import TrackCard from './components/TrackCard';
 import {fetchAlbums} from '../albums/albumsThunk';
@@ -16,6 +16,8 @@ const Tracks = () => {
   const tracks = useAppSelector(selectTracks);
   const {albumId} = useParams();
   const tracksFetching = useAppSelector(selectTracksFetching);
+  const trackPublishToggling = useAppSelector(selectTrackToggling);
+  const trackDeleting = useAppSelector(selectTrackDeleting);
   const user = useAppSelector(selectUser);
 
 
@@ -30,6 +32,14 @@ const Tracks = () => {
     if (user) {
       await dispatch(addTrackHistory(trackId)).unwrap();
     }
+  };
+
+  const handleTrackPublished = async (trackId: string) => {
+    await dispatch(togglePublishedTrack(trackId));
+  };
+
+  const handleTrackDelete = async (id: string) => {
+    await dispatch(deleteTrack(id));
   };
 
   return (
@@ -52,15 +62,21 @@ const Tracks = () => {
               )}
             </Stack>
           )}
-          <Stack direction="column" spacing={2}>
+          <Stack direction="column" spacing={1}>
             {tracks.map((track) => (
               <TrackCard
                 key={track._id}
                 title={track.title}
                 trackNumber={track.trackNumber}
                 duration={track.duration}
+                user={user}
+                isPublished={track.isPublished}
+                onToggle={() => handleTrackPublished(track._id)}
+                onDelete={() => handleTrackDelete(track._id)}
                 onPlay={() => handleTrackPlay(track._id)}
                 isVisible={!!user}
+                isToggling={trackPublishToggling}
+                isDeleting={trackDeleting}
               />
             ))}
           </Stack>
