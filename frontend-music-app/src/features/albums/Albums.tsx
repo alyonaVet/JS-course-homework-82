@@ -1,12 +1,13 @@
 import {Box, CircularProgress, Stack, Typography} from '@mui/material';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {selectAlbumFetching, selectAlbums} from './albumsSlice';
+import {selectAlbumDeleting, selectAlbumFetching, selectAlbums, selectAlbumToggling} from './albumsSlice';
 import {useNavigate, useParams} from 'react-router-dom';
 import {selectArtists} from '../artists/artistsSlice';
 import {useEffect} from 'react';
-import {fetchAlbums} from './albumsThunk';
+import {deleteAlbum, fetchAlbums, togglePublishedAlbum} from './albumsThunk';
 import AlbumCard from './components/AlbumCard';
 import {fetchArtists} from '../artists/artistsThunk';
+import {selectUser} from '../users/usersSlice';
 
 const Albums = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +16,9 @@ const Albums = () => {
   const {artistId} = useParams();
   const navigate = useNavigate();
   const albumsFetching = useAppSelector(selectAlbumFetching);
-
+  const albumPublishToggling = useAppSelector(selectAlbumToggling);
+  const albumDeleting = useAppSelector(selectAlbumDeleting);
+  const user = useAppSelector(selectUser);
 
   useEffect(() => {
     if (artistId) {
@@ -26,6 +29,15 @@ const Albums = () => {
 
   const handleAlbumClick = (albumId: string) => {
     navigate(`/albums/${albumId}/tracks`);
+  };
+
+
+  const handleTogglePublished = async (id: string) => {
+    await dispatch(togglePublishedAlbum(id));
+  };
+
+  const handleDelete = async (id: string) => {
+    await dispatch(deleteAlbum(id));
   };
 
   const artist = artists.find((artist) => artist._id === artistId);
@@ -42,14 +54,21 @@ const Albums = () => {
           <CircularProgress/>
         </Box>
       ) : (
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" flexWrap={'wrap'} gap={2}>
           {albums.map((album) => (
             <AlbumCard
               key={album._id}
+              id={album._id}
               title={album.title}
               date={album.date}
               image={album.image}
+              user={user}
+              isPublished={album.isPublished}
               onClick={() => handleAlbumClick(album._id)}
+              onToggle={() => handleTogglePublished(album._id)}
+              onDelete={() => handleDelete(album._id)}
+              isToggling={albumPublishToggling}
+              isDeleting={albumDeleting}
             />
           ))}
         </Stack>
