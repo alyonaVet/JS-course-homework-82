@@ -3,9 +3,10 @@ export interface Artist {
   name: string;
   description: string | null;
   image: string | null;
+  isPublished: boolean;
 }
 
-export type ArtistFields = Omit<Artist, '_id'>
+export type ArtistFields = Omit<Artist, '_id' | 'isPublished'>
 
 export interface Album {
   _id: string;
@@ -16,6 +17,7 @@ export interface Album {
   title: string;
   date: number;
   image: string | null;
+  isPublished: boolean;
 }
 
 export interface AlbumFields {
@@ -32,6 +34,7 @@ export interface Track {
   title: string;
   trackNumber: number;
   duration: string;
+  isPublished: boolean;
 }
 
 export interface TrackFields {
