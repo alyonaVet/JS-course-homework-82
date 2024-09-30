@@ -5,7 +5,6 @@ import {IAlbum} from '../types';
 import mongoose from 'mongoose';
 import auth, {RequestWithUser} from '../middleware/auth';
 import permit from '../middleware/permit';
-import Artist from '../models/Artist';
 
 const albumsRouter = express.Router();
 
