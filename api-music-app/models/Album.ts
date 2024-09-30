@@ -1,5 +1,6 @@
 import mongoose, {Types} from 'mongoose';
 import Artist from './Artist';
+import Track from './Track';
 
 const Schema = mongoose.Schema;
 
@@ -30,6 +31,14 @@ const AlbumSchema = new Schema({
     required: true,
   },
   image: String,
+});
+
+AlbumSchema.pre('findOneAndDelete', async function (next) {
+  const albumId = this.getQuery()["_id"];
+
+  await Track.deleteMany({ album: albumId });
+
+  next();
 });
 
 const Album = mongoose.model('Album', AlbumSchema);

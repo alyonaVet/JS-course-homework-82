@@ -5,6 +5,7 @@ import {IAlbum} from '../types';
 import mongoose from 'mongoose';
 import auth, {RequestWithUser} from '../middleware/auth';
 import permit from '../middleware/permit';
+import Artist from '../models/Artist';
 
 const albumsRouter = express.Router();
 
@@ -101,7 +102,7 @@ albumsRouter.delete('/:id', auth, permit('admin'), async (req: RequestWithUser, 
       return res.status(404).send({error: 'Album not found'});
     }
 
-    await album.deleteOne();
+    await Album.findByIdAndDelete(req.params.id);
 
     return res.send({message: 'Album was deleted successfully.'});
 
