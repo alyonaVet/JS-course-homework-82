@@ -35,7 +35,7 @@ const FileInput: React.FC<Props> = ({onChange, name, label, error, helperText}) 
         <Box flex={1}>
           <TextField
             label={label}
-            InputProps={{readOnly: true}}
+            slotProps={{input: {readOnly: true}}}
             value={filename}
             onClick={activateInput}
             error={error}
