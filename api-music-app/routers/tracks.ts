@@ -2,25 +2,29 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Track from '../models/Track';
 import {ITrack} from '../types';
-import auth, {RequestWithUser} from '../middleware/auth';
+import auth, {checkUser, RequestWithUser} from '../middleware/auth';
 import permit from '../middleware/permit';
 
 const tracksRouter = express.Router();
 
-tracksRouter.get('/', async (req, res, next) => {
+tracksRouter.get('/', checkUser, async (req: RequestWithUser, res, next) => {
   try {
-    const albumId = req.query.album;
+    const isAdmin = req.user !== undefined && req.user.role === 'admin';
+    const userFilter = isAdmin ? {} : {isPublished: true};
 
+    const albumId = req.query.album;
     const albumFilter = albumId ? {album: albumId} : {};
 
-    const tracks = await Track.find(albumFilter).sort({trackNumber: 1});
+    const filter = {...userFilter, ...albumFilter};
+
+    const tracks = await Track.find(filter).sort({trackNumber: 1});
     res.send(tracks);
   } catch (error) {
     return next(error);
   }
 });
 
-tracksRouter.post('/', auth,  async (req: RequestWithUser, res, next) => {
+tracksRouter.post('/', auth, async (req: RequestWithUser, res, next) => {
   try {
     if (!req.user) {
       return res.status(401).send({error: 'User not found'});
@@ -45,10 +49,10 @@ tracksRouter.post('/', auth,  async (req: RequestWithUser, res, next) => {
   }
 });
 
-tracksRouter.patch("/:id/togglePublished", auth, permit('admin'), async (req: RequestWithUser, res, next) => {
+tracksRouter.patch('/:id/togglePublished', auth, permit('admin'), async (req: RequestWithUser, res, next) => {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).send({ error: 'Track ID is not valid' });
+      return res.status(400).send({error: 'Track ID is not valid'});
     }
 
     const track = await Track.findById(req.params.id);
@@ -71,11 +75,11 @@ tracksRouter.patch("/:id/togglePublished", auth, permit('admin'), async (req: Re
   }
 });
 
-tracksRouter.delete("/:id", auth, permit('admin'), async (req: RequestWithUser, res, next) => {
+tracksRouter.delete('/:id', auth, permit('admin'), async (req: RequestWithUser, res, next) => {
   try {
 
     if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).send({ error: 'Track ID is not valid' });
+      return res.status(400).send({error: 'Track ID is not valid'});
     }
 
     const track = await Track.findById(req.params.id);
