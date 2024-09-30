@@ -8,7 +8,6 @@ import permit from '../middleware/permit';
 
 const artistsRouter = express.Router();
 
-
 artistsRouter.get('/', checkUser, async (req: RequestWithUser, res, next) => {
   try {
     const isAdmin = req.user !== undefined && req.user.role === 'admin';
@@ -85,7 +84,7 @@ artistsRouter.delete('/:id', auth, permit('admin'), async (req: RequestWithUser,
       return res.status(404).send({error: 'Artist not found'});
     }
 
-    await artist.deleteOne();
+    await Artist.findByIdAndDelete(req.params.id);
 
     return res.send({message: 'Artist was deleted successfully.'});
 
