@@ -1,14 +1,32 @@
 import React from 'react';
-import {Box, Card, CardActionArea, CardContent, CardMedia, styled, Typography} from '@mui/material';
+import {Box, Button, Card, CardActionArea, CardContent, CardMedia, Stack, styled, Typography} from '@mui/material';
 import {apiURL} from '../../../constants';
+import {User} from '../../../types';
 
 interface Props {
+  id: string;
   name: string;
   image: string | null;
+  user: User | null;
+  isPublished: boolean;
+  onToggle: VoidFunction;
+  onDelete: VoidFunction;
   onClick: () => void;
+  isToggling: boolean;
+  isDeleting: boolean;
 }
 
-const ArtistCard: React.FC<Props> = ({name, image, onClick}) => {
+const ArtistCard: React.FC<Props> = ({
+                                       name,
+                                       image,
+                                       user,
+                                       isPublished,
+                                       onToggle,
+                                       onDelete,
+                                       onClick,
+                                       isToggling,
+                                       isDeleting
+                                     }) => {
   const ImageCardMedia = styled(CardMedia)({
     height: 0,
     paddingTop: '100%',
@@ -18,28 +36,38 @@ const ArtistCard: React.FC<Props> = ({name, image, onClick}) => {
   const cardImage = image ? apiURL + '/' + image : '';
 
   return (
-    <Card sx={{
-      width: 300,
-      m: 1,
-      '&:hover': {
-        boxShadow: 6,
-        transform: 'scale(1.03)',
-      },
-      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    }}>
-      <CardActionArea onClick={onClick}>
-        {image ? (
-          <ImageCardMedia image={cardImage} />
-        ) : (
-          <Box sx={{ height: 0, paddingTop: '100%', backgroundColor: '#fafafa' }} />
+    <Box sx={{mt: 3}}>
+      {user && user.role === 'admin' &&
+        (<Stack direction="row" justifyContent="space-between" mb={2}>
+            <Button type="submit" sx={{cursor: 'pointer'}} color={isPublished ? 'success' : 'error'}
+                    onClick={onToggle} disabled={isToggling}>{isPublished ? 'Published' : 'Unpublished'}</Button>
+            <Button type="submit" variant="outlined" color="error" sx={{mr: 1}} onClick={onDelete}
+                    disabled={isDeleting}>Delete</Button>
+          </Stack>
         )}
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div" textAlign="center">
-            {name}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+      <Card sx={{
+        width: 300,
+        m: 1,
+        '&:hover': {
+          boxShadow: 6,
+          transform: 'scale(1.03)',
+        },
+        transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      }}>
+        <CardActionArea onClick={onClick}>
+          {image ? (
+            <ImageCardMedia image={cardImage}/>
+          ) : (
+            <Box sx={{height: 0, paddingTop: '100%', backgroundColor: '#fafafa'}}/>
+          )}
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div" textAlign="center">
+              {name}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Box>
   );
 };
 
