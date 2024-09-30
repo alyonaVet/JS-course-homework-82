@@ -3,18 +3,23 @@ import Album from '../models/Album';
 import {imagesUpload} from '../multer';
 import {IAlbum} from '../types';
 import mongoose from 'mongoose';
-import auth, {RequestWithUser} from '../middleware/auth';
+import auth, {checkUser, RequestWithUser} from '../middleware/auth';
 import permit from '../middleware/permit';
 
 const albumsRouter = express.Router();
 
-albumsRouter.get('/', async (req, res, next) => {
+albumsRouter.get('/', checkUser, async (req: RequestWithUser, res, next) => {
   try {
+    const isAdmin = req.user !== undefined && req.user.role === 'admin';
+    const userFilter = isAdmin ? {} : { isPublished: true };
+
     const artistId = req.query.artist;
 
     const artistFilter = artistId ? {artist: artistId} : {};
 
-    const albums = await Album.find(artistFilter).sort({date: -1}).populate('artist', 'name');
+    const filter = { ...userFilter, ...artistFilter };
+
+    const albums = await Album.find(filter).sort({date: -1}).populate('artist', 'name');
     return res.send(albums);
   } catch (error) {
     return next(error);
