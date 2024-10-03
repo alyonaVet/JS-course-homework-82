@@ -29,11 +29,14 @@ const UserMenu: React.FC<Props> = ({ user }) => {
 
   return (
     <Box display="flex" alignItems="center">
-      <Avatar sx={{ backgroundColor: '#fff', color: '#8e44ad', mr: 1 }}>
-        <PersonIcon />
+      <Avatar
+        src={user.avatar || ''}
+        sx={{ backgroundColor: '#fff', color: '#8e44ad', mr: 1 }}
+      >
+        {!user.avatar && <PersonIcon />}
       </Avatar>
       <Button onClick={handleClick} color="inherit">
-        {user.username}
+        {user.displayName}
       </Button>
       <Menu anchorEl={anchorEl} open={isOpen} keepMounted onClose={handleClose}>
         <MenuItem component={Link} to="/artists/add-artist">Add artist</MenuItem>
