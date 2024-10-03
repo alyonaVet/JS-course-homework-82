@@ -60,6 +60,8 @@ export interface User {
   username: string;
   token: string;
   role: string;
+  displayName: string;
+  avatar?: string;
 }
 
 export interface ValidationError {
