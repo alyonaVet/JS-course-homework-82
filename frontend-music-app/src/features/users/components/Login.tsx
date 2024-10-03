@@ -5,7 +5,8 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {selectLoginError} from '../usersSlice';
-import {login} from '../usersThunk';
+import {googleLogin, login} from '../usersThunk';
+import {CredentialResponse, GoogleLogin} from '@react-oauth/google';
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +32,13 @@ const Login = () => {
     navigate('/');
   };
 
+  const googleLoginHandler = async (credentialResponse: CredentialResponse) => {
+    if (credentialResponse.credential) {
+      await dispatch(googleLogin(credentialResponse.credential)).unwrap();
+    }
+    navigate('/');
+  };
+
   return (
     <Container maxWidth="xs">
       <Box
@@ -50,7 +58,7 @@ const Login = () => {
         <Avatar sx={{m: 1, backgroundColor: 'secondary.main'}}>
           <LockOpenIcon/>
         </Avatar>
-        <Typography variant="h5" component="h1" textAlign="center" gutterBottom>
+        <Typography variant="h5" component="h1" textAlign="center" gutterBottom sx={{mb: 0}}>
           Sign in
         </Typography>
         {error && (
@@ -58,6 +66,13 @@ const Login = () => {
             {error.error}
           </Alert>
         )}
+        <Box sx={{pb: 1}}>
+          <GoogleLogin onSuccess={googleLoginHandler}
+                       onError={() => {
+                         console.log('Login Failed');
+                       }}
+          />
+        </Box>
         <TextField
           required
           label="Username"
@@ -84,7 +99,7 @@ const Login = () => {
         </Button>
         <Typography variant="body2" color="text.secondary" sx={{mt: 2}}>
           Do not have an account?{' '}
-          <Link component={RouterLink} to={'/register'}  variant="body2">
+          <Link component={RouterLink} to={'/register'} variant="body2">
             Sign up
           </Link>
         </Typography>
