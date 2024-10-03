@@ -36,7 +36,13 @@ const UserSchema = new Schema<UserFields, UserModel, UserMethods>({
     required: true,
     default: 'user',
     enum: ['user', 'admin'],
-  }
+  },
+  displayName: {
+    type: String,
+    required: true,
+  },
+  googleID: String,
+  avatar: String,
 });
 
 UserSchema.methods.checkPassword = function (password) {
