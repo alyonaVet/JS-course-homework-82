@@ -1,11 +1,13 @@
 import React, {ChangeEvent, useState} from 'react';
 import {RegisterCredentials} from '../../../types';
-import {Avatar, Box, Button, Container, TextField, Typography, Link} from '@mui/material';
+import {Avatar, Box, Button, Container, TextField, Typography, Link, Stack} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
-import {register} from '../usersThunk';
+import {googleLogin, register} from '../usersThunk';
 import {selectRegisterError} from '../usersSlice';
+import FileInput from '../../../UI/FileInput/FileInput';
+import {CredentialResponse, GoogleLogin} from '@react-oauth/google';
 
 const Register = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +17,8 @@ const Register = () => {
   const [registerData, setRegisterData] = useState<RegisterCredentials>({
     username: '',
     password: '',
+    displayName: '',
+    avatar: '',
   });
 
   const getFieldError = (fieldName: string) => {
@@ -23,6 +27,16 @@ const Register = () => {
 
   const inputChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
+    setRegisterData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const fileInputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, files} = event.target;
+    const value = files && files[0] ? files[0] : null;
+
     setRegisterData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -39,6 +53,13 @@ const Register = () => {
     }
   };
 
+  const googleLoginHandler = async (credentialResponse: CredentialResponse) => {
+    if (credentialResponse.credential) {
+      await dispatch(googleLogin(credentialResponse.credential)).unwrap();
+    }
+    navigate('/');
+  };
+
   return (
     <Container maxWidth="xs">
       <Box
@@ -48,20 +69,30 @@ const Register = () => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
-          p: 4,
+          gap: 1,
+          p: 2,
           border: '1px solid #ddd',
           borderRadius: 2,
-          mt: 5,
+          mt: 3,
           alignItems: 'center',
         }}
       >
         <Avatar sx={{m: 1, backgroundColor: 'secondary.main'}}>
           <LockOutlinedIcon/>
         </Avatar>
-        <Typography variant="h5" component="h1" textAlign="center" gutterBottom>
+        <Typography variant="h5" component="h1" textAlign="center" gutterBottom  sx={{m: 0}}>
           Sign up
         </Typography>
+
+        <Typography variant="body2" textAlign="center" color="gray">or</Typography>
+
+        <Box sx={{pb: 1}}>
+          <GoogleLogin onSuccess={googleLoginHandler}
+                       onError={() => {
+                         console.log('Login Failed');
+                       }}
+          />
+        </Box>
 
         <TextField
           required
@@ -77,6 +108,17 @@ const Register = () => {
 
         <TextField
           required
+          label="Display Name"
+          name="displayName"
+          value={registerData.displayName}
+          onChange={inputChangeHandler}
+          error={Boolean(getFieldError('displayName'))}
+          helperText={getFieldError('displayName')}
+          fullWidth
+        />
+
+        <TextField
+          required
           label="Password"
           name="password"
           type="password"
@@ -87,6 +129,14 @@ const Register = () => {
           helperText={getFieldError('password')}
           fullWidth
         />
+
+        <Stack direction="row" alignSelf="start">
+          <FileInput
+            label="Avatar"
+            name="avatar"
+            onChange={fileInputChangeHandler}
+          />
+        </Stack>
 
         <Button type="submit" variant="contained" sx={{mt: 2, backgroundColor: '#8e44ad'}} fullWidth>
           Sign up
