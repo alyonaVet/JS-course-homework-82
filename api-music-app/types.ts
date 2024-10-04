@@ -27,7 +27,7 @@ export interface UserFields {
   role: string;
   displayName: string;
   googleID?: string;
-  avatar?: string;
+  avatar: string | null;
 }
 
 export interface UserMethods {
