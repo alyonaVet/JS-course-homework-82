@@ -48,6 +48,8 @@ export interface TrackFields {
 export interface RegisterCredentials {
   username: string;
   password: string;
+  displayName: string;
+  avatar: string | null;
 }
 
 export interface LoginCredentials {
