@@ -25,12 +25,18 @@ const AddTrackForm: React.FC<Props> = ({onSubmit, isLoading}) => {
     trackNumber: '',
     duration: ''
   });
+
+  const [durationError, setDurationError] = useState<string | null>(null);
+
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
     setTrackData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
+    if (name === 'duration') {
+      setDurationError(null);
+    }
   };
 
   const albumInputChangeHandler = (event: SelectChangeEvent) => {
@@ -39,6 +45,15 @@ const AddTrackForm: React.FC<Props> = ({onSubmit, isLoading}) => {
 
   const submitFormHandler = (event: React.FormEvent) => {
     event.preventDefault();
+
+    setDurationError('');
+
+    const durationRegex = /^\d{1,2}:[0-5]\d$/;
+
+    if (trackData.duration && !durationRegex.test(trackData.duration)) {
+      setDurationError('Duration must be in MM:SS format (e.g., 6:34)');
+      return;
+    }
     onSubmit({...trackData});
   };
 
@@ -98,6 +113,7 @@ const AddTrackForm: React.FC<Props> = ({onSubmit, isLoading}) => {
           name="trackNumber"
           value={trackData.trackNumber}
           onChange={inputChangeHandler}
+          type="number"
           required
           fullWidth
         />
@@ -112,6 +128,8 @@ const AddTrackForm: React.FC<Props> = ({onSubmit, isLoading}) => {
           name="duration"
           value={trackData.duration}
           onChange={inputChangeHandler}
+          error={Boolean(durationError)}
+          helperText={durationError}
           fullWidth
         />
       </Stack>
